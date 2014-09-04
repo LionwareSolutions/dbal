@@ -17,54 +17,21 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Doctrine\DBAL\Types;
-
-use Doctrine\DBAL\Platforms\AbstractPlatform;
+namespace Doctrine\DBAL\Schema\Visitor;
 
 /**
- * Type that maps an SQL boolean to a PHP boolean.
+ * Visitor that can visit schema namespaces.
  *
- * @since 2.0
+ * @author Steve Müller <st.mueller@dzh-online.de>
+ * @link   www.doctrine-project.org
+ * @since  2.5
  */
-class BooleanType extends Type
+interface NamespaceVisitor
 {
     /**
-     * {@inheritdoc}
+     * Accepts a schema namespace name.
+     *
+     * @param string $namespaceName The schema namespace name to accept.
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
-    {
-        return $platform->getBooleanTypeDeclarationSQL($fieldDeclaration);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
-    {
-        return $platform->convertBooleansToDatabaseValue($value);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
-    {
-        return $platform->convertFromBoolean($value);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return Type::BOOLEAN;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBindingType()
-    {
-        return \PDO::PARAM_BOOL;
-    }
+    public function acceptNamespace($namespaceName);
 }

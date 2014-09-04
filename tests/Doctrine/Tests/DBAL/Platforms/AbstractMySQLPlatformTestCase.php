@@ -514,6 +514,30 @@ abstract class AbstractMySQLPlatformTestCase extends AbstractPlatformTestCase
         );
     }
 
+    /**
+     * @group DBAL-807
+     */
+    protected function getAlterTableRenameIndexInSchemaSQL()
+    {
+        return array(
+            'DROP INDEX idx_foo ON myschema.mytable',
+            'CREATE INDEX idx_bar ON myschema.mytable (id)',
+        );
+    }
+
+    /**
+     * @group DBAL-807
+     */
+    protected function getQuotedAlterTableRenameIndexInSchemaSQL()
+    {
+        return array(
+            'DROP INDEX `create` ON `schema`.`table`',
+            'CREATE INDEX `select` ON `schema`.`table` (id)',
+            'DROP INDEX `foo` ON `schema`.`table`',
+            'CREATE INDEX `bar` ON `schema`.`table` (id)',
+        );
+    }
+
     public function testDoesNotPropagateDefaultValuesForUnsupportedColumnTypes()
     {
         $table = new Table("text_blob_default_value");
@@ -554,6 +578,22 @@ abstract class AbstractMySQLPlatformTestCase extends AbstractPlatformTestCase
             "CHANGE quoted1 quoted INT NOT NULL COMMENT 'Quoted 1', " .
             "CHANGE quoted2 `and` INT NOT NULL COMMENT 'Quoted 2', " .
             "CHANGE quoted3 `baz` INT NOT NULL COMMENT 'Quoted 3'"
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getQuotedAlterTableChangeColumnLengthSQL()
+    {
+        return array(
+            "ALTER TABLE mytable " .
+            "CHANGE unquoted1 unquoted1 VARCHAR(255) NOT NULL COMMENT 'Unquoted 1', " .
+            "CHANGE unquoted2 unquoted2 VARCHAR(255) NOT NULL COMMENT 'Unquoted 2', " .
+            "CHANGE unquoted3 unquoted3 VARCHAR(255) NOT NULL COMMENT 'Unquoted 3', " .
+            "CHANGE `create` `create` VARCHAR(255) NOT NULL COMMENT 'Reserved keyword 1', " .
+            "CHANGE `table` `table` VARCHAR(255) NOT NULL COMMENT 'Reserved keyword 2', " .
+            "CHANGE `select` `select` VARCHAR(255) NOT NULL COMMENT 'Reserved keyword 3'"
         );
     }
 }
